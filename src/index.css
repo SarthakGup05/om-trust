@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #1F5D42;
+  --color-primary-dark: #164430;
+  --color-accent: #D98B3A;
+  --color-accent-hover: #C47A2D;
+  --color-bg-main: #FFF9F0;
+  --color-bg-secondary: #F1F6F1;
+  --color-text-dark: #24332B;
+
+  --font-heading: 'Manrope', sans-serif;
+  --font-body: 'Inter', sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body), sans-serif;
+  background-color: #FFF9F0;
+  color: #24332B;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading), sans-serif;
+}
+
+@keyframes flowBeam {
+  0% {
+    left: -25%;
+  }
+  100% {
+    left: 105%;
+  }
+}
+
+.timeline-beam {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 30%;
+  background: linear-gradient(90deg, transparent 0%, #D98B3A 50%, #1F5D42 80%, transparent 100%);
+  animation: flowBeam 3.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  filter: drop-shadow(0 0 6px rgba(217, 139, 58, 0.6));
+}
+
+.timeline-beam-thin {
+  position: absolute;
+  top: -1px;
+  bottom: -1px;
+  width: 60px;
+  background: linear-gradient(90deg, transparent, #D98B3A 50%, transparent);
+  animation: flowBeam 2.4s linear infinite;
+  filter: drop-shadow(0 0 4px #D98B3A);
+}
+
+
+
