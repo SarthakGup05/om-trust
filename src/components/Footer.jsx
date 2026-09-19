@@ -161,14 +161,32 @@ export default function Footer() {
 
         </div>
 
-        {/* Bottom Copyright & Disclaimer Bar */}
-        <div className="pt-5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#F1F6F1]/60">
-          <div>
+        {/* Bottom Copyright, Developer Credit & Disclaimer Bar */}
+        <div className="pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-[#F1F6F1]/70">
+          <div className="text-center md:text-left">
             © {new Date().getFullYear()} Om Charitable Trust. All Rights Reserved.
           </div>
-          <div className="flex flex-wrap items-center gap-4 sm:gap-6">
+
+          <div className="flex items-center justify-center gap-1.5 text-xs text-[#F1F6F1]/85">
+            <span>Built with</span>
+            <span className="inline-block text-rose-500 animate-pulse text-sm select-none" aria-label="love">
+              ❤️
+            </span>
+            <span>by</span>
+            <a
+              href="https://saarthak.xyz/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#F5C284] hover:text-[#D98B3A] font-semibold underline underline-offset-4 decoration-[#F5C284]/50 hover:decoration-[#D98B3A] transition-colors"
+            >
+              Saarthak
+            </a>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-center md:justify-end gap-2 sm:gap-4 text-[11px] sm:text-xs text-center">
             <span className="text-[#F5C284] font-medium">Approval Under Section 80G(5)(vi) & 12AA of Income Tax Act, 1961</span>
-            <span>Registered Non-Profit Charitable Trust</span>
+            <span className="hidden sm:inline text-white/30">•</span>
+            <span className="text-[#F1F6F1]/60">Registered Non-Profit Charitable Trust</span>
           </div>
         </div>
 
