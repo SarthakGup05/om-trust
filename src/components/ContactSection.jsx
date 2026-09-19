@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Phone, MessageSquare, Mail, MapPin, Send, CheckCircle2, Clock } from 'lucide-react'
+import { Phone, MessageSquare, Mail, MapPin, Send, CheckCircle2, Clock, Loader2 } from 'lucide-react'
+import { submitToWeb3Forms, isValidPhone } from '../services/web3forms'
 
 export default function ContactSection() {
   const [formData, setFormData] = useState({
@@ -7,31 +8,57 @@ export default function ContactSection() {
     phone: '',
     message: '',
   })
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
 
   const TRUST_PHONE = '+91 8948038888'
   const TRUST_WHATSAPP = '918948038888'
   const TRUST_EMAIL = 'anitasinghrathore@gmail.com'
-  const TRUST_ADDRESS = '21/1100, Sector 21, Indira Nagar, Lucknow 226012'
-  const TRUST_LANDMARK = 'Opposite Sherwood College'
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!formData.name.trim() || !formData.phone.trim() || !formData.message.trim()) {
-      setErrorMsg('Please complete all fields before sending.')
+
+    const trimmedName = formData.name.trim()
+    const trimmedPhone = formData.phone.trim()
+    const trimmedMessage = formData.message.trim()
+
+    if (!trimmedName || trimmedName.length < 2) {
+      setErrorMsg('Please enter your name (at least 2 characters).')
       return
     }
+
+    if (!trimmedPhone || !isValidPhone(trimmedPhone)) {
+      setErrorMsg('Please enter a valid phone number (at least 10 digits).')
+      return
+    }
+
+    if (!trimmedMessage) {
+      setErrorMsg('Please enter your message.')
+      return
+    }
+
     setErrorMsg('')
+    setIsSubmitting(true)
 
-    const text = `*General Inquiry - Om Charitable Trust*
-Name: ${formData.name}
-Phone: ${formData.phone}
-Message: ${formData.message}`
+    try {
+      await submitToWeb3Forms({
+        subject: 'New Contact Inquiry - Om Charitable Trust',
+        formType: 'Contact Us',
+        data: {
+          'Name': trimmedName,
+          'Phone': trimmedPhone,
+          'Message': trimmedMessage,
+        },
+      })
 
-    const url = `https://wa.me/${TRUST_WHATSAPP}?text=${encodeURIComponent(text)}`
-    window.open(url, '_blank')
-    setSubmitted(true)
+      setSubmitted(true)
+      setFormData({ name: '', phone: '', message: '' })
+    } catch (err) {
+      setErrorMsg(err.message || 'Something went wrong while sending your request. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -169,7 +196,7 @@ Message: ${formData.message}`
                   Send a Direct Message
                 </h3>
                 <p className="text-xs sm:text-sm text-[#24332B]/70 mt-1">
-                  Fill in your inquiry below and we will connect with you immediately over WhatsApp.
+                  Fill in your inquiry below and our team will receive your message directly.
                 </p>
               </div>
 
@@ -179,21 +206,34 @@ Message: ${formData.message}`
                     <CheckCircle2 className="w-7 h-7" />
                   </div>
                   <h4 className="font-heading font-bold text-lg text-[#1F5D42]">
-                    Message Sent to WhatsApp!
+                    Message Sent Successfully!
                   </h4>
                   <p className="font-body text-xs sm:text-sm text-[#24332B]/75 max-w-sm mx-auto">
-                    We have launched WhatsApp with your formatted message. Our team will respond shortly.
+                    Thank you for contacting Om Charitable Trust. We will get back to you soon.
                   </p>
-                  <button
-                    type="button"
-                    onClick={() => setSubmitted(false)}
-                    className="mt-3 px-5 py-2 rounded-full bg-[#1F5D42] text-white text-xs font-semibold"
-                  >
-                    Send Another Message
-                  </button>
+                  <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-2.5">
+                    <button
+                      type="button"
+                      onClick={() => setSubmitted(false)}
+                      className="px-5 py-2.5 rounded-full bg-[#1F5D42] text-white text-xs font-semibold hover:bg-[#164430] transition-colors cursor-pointer"
+                    >
+                      Send Another Message
+                    </button>
+                    <a
+                      href={`https://wa.me/${TRUST_WHATSAPP}?text=${encodeURIComponent('Hello Om Charitable Trust, I just submitted an inquiry through your website.')}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-5 py-2.5 rounded-full bg-[#FFF9F0] border border-[#1F5D42]/20 text-[#1F5D42] text-xs font-semibold hover:bg-[#F1F6F1] transition-colors flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <MessageSquare className="w-3.5 h-3.5 text-[#25D366]" />
+                      <span>Also Chat on WhatsApp</span>
+                    </a>
+                  </div>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-3.5">
+                  <input type="checkbox" name="botcheck" className="hidden" style={{ display: 'none' }} />
+
                   {errorMsg && (
                     <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-medium">
                       {errorMsg}
@@ -244,10 +284,20 @@ Message: ${formData.message}`
 
                   <button
                     type="submit"
-                    className="w-full py-3.5 rounded-xl bg-[#1F5D42] hover:bg-[#164430] text-white font-heading font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+                    disabled={isSubmitting}
+                    className="w-full py-3.5 rounded-xl bg-[#1F5D42] hover:bg-[#164430] disabled:opacity-75 disabled:cursor-not-allowed text-white font-heading font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
                   >
-                    <Send className="w-4 h-4" />
-                    <span>Send Message via WhatsApp</span>
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span>Sending...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-4 h-4" />
+                        <span>Send Message</span>
+                      </>
+                    )}
                   </button>
                 </form>
               )}
@@ -255,7 +305,7 @@ Message: ${formData.message}`
 
             <div className="pt-3 mt-4 border-t border-[#1F5D42]/10 flex items-center gap-2 text-xs text-[#24332B]/60">
               <Clock className="w-3.5 h-3.5 text-[#D98B3A]" />
-              <span>Prompt response from Trust trustees via WhatsApp</span>
+              <span>Prompt response directly from Om Charitable Trust trustees</span>
             </div>
           </div>
 

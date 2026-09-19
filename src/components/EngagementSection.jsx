@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Heart, HandHeart, CheckCircle2, MessageSquare, Send, ArrowRight, ShieldCheck } from 'lucide-react'
+import { Heart, HandHeart, CheckCircle2, MessageSquare, Send, ArrowRight, ShieldCheck, Loader2 } from 'lucide-react'
+import { submitToWeb3Forms, isValidPhone } from '../services/web3forms'
 
 export default function EngagementSection() {
   // Mode: 'volunteer' | 'donate'
@@ -25,52 +26,126 @@ export default function EngagementSection() {
     message: '',
   })
 
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [lastSubmittedType, setLastSubmittedType] = useState('volunteer')
   const [errorMsg, setErrorMsg] = useState('')
 
   // WhatsApp Destination Number (Official Om Charitable Trust WhatsApp number from receipt)
   const TRUST_WHATSAPP = '918948038888'
 
-  const handleVolunteerSubmit = (e) => {
+  const handleVolunteerSubmit = async (e) => {
     e.preventDefault()
-    if (!volunteerData.fullName.trim() || !volunteerData.phone.trim() || !volunteerData.city.trim()) {
-      setErrorMsg('Please fill in all required fields (Name, Phone, City).')
+
+    const trimmedName = volunteerData.fullName.trim()
+    const trimmedPhone = volunteerData.phone.trim()
+    const trimmedCity = volunteerData.city.trim()
+    const trimmedMessage = volunteerData.message.trim()
+
+    if (!trimmedName || trimmedName.length < 2) {
+      setErrorMsg('Please enter your full name (at least 2 characters).')
       return
     }
+
+    if (!trimmedPhone || !isValidPhone(trimmedPhone)) {
+      setErrorMsg('Please enter a valid phone number (at least 10 digits).')
+      return
+    }
+
+    if (!trimmedCity || trimmedCity.length < 2) {
+      setErrorMsg('Please enter your city/location.')
+      return
+    }
+
     setErrorMsg('')
+    setIsSubmitting(true)
 
-    const text = `*New Volunteer Request - Om Charitable Trust*
-Name: ${volunteerData.fullName}
-Phone: ${volunteerData.phone}
-City: ${volunteerData.city}
-Area of Interest: ${volunteerData.areaOfInterest}
-Availability: ${volunteerData.availability}
-Message: ${volunteerData.message || 'Ready to serve'}`
+    try {
+      await submitToWeb3Forms({
+        subject: 'New Volunteer Application - Om Charitable Trust',
+        formType: 'Volunteer Application',
+        data: {
+          'Full Name': trimmedName,
+          'Phone': trimmedPhone,
+          'City': trimmedCity,
+          'Area of Interest': volunteerData.areaOfInterest,
+          'Availability': volunteerData.availability,
+          'Message': trimmedMessage || 'Ready to serve',
+        },
+      })
 
-    const whatsappUrl = `https://wa.me/${TRUST_WHATSAPP}?text=${encodeURIComponent(text)}`
-    window.open(whatsappUrl, '_blank')
-    setSubmitted(true)
+      setLastSubmittedType('volunteer')
+      setSubmitted(true)
+      setVolunteerData({
+        fullName: '',
+        phone: '',
+        city: '',
+        areaOfInterest: 'Food & Nutrition',
+        availability: 'Weekend Drives',
+        message: '',
+      })
+    } catch (err) {
+      setErrorMsg(err.message || 'Something went wrong while sending your request. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
-  const handleDonateSubmit = (e) => {
+  const handleDonateSubmit = async (e) => {
     e.preventDefault()
-    if (!donateData.fullName.trim() || !donateData.phone.trim() || !donateData.city.trim()) {
-      setErrorMsg('Please fill in all required fields (Name/Organization, Phone, City).')
+
+    const trimmedName = donateData.fullName.trim()
+    const trimmedPhone = donateData.phone.trim()
+    const trimmedCity = donateData.city.trim()
+    const trimmedMessage = donateData.message.trim()
+
+    if (!trimmedName || trimmedName.length < 2) {
+      setErrorMsg('Please enter your name or organization (at least 2 characters).')
       return
     }
+
+    if (!trimmedPhone || !isValidPhone(trimmedPhone)) {
+      setErrorMsg('Please enter a valid phone number (at least 10 digits).')
+      return
+    }
+
+    if (!trimmedCity || trimmedCity.length < 2) {
+      setErrorMsg('Please enter your city/location.')
+      return
+    }
+
     setErrorMsg('')
+    setIsSubmitting(true)
 
-    const text = `*New Support & Donation Inquiry - Om Charitable Trust*
-Name/Org: ${donateData.fullName}
-Phone: ${donateData.phone}
-City: ${donateData.city}
-Initiative: ${donateData.supportCategory}
-Contribution Type: ${donateData.contributionType}
-Message: ${donateData.message || 'Interested in supporting'}`
+    try {
+      await submitToWeb3Forms({
+        subject: 'New Support Request - Om Charitable Trust',
+        formType: 'Support & Donation Inquiry',
+        data: {
+          'Full Name / Organization': trimmedName,
+          'Phone': trimmedPhone,
+          'City': trimmedCity,
+          'Interested In': donateData.supportCategory,
+          'Preferred Contribution Mode': donateData.contributionType,
+          'Message': trimmedMessage || 'Interested in supporting',
+        },
+      })
 
-    const whatsappUrl = `https://wa.me/${TRUST_WHATSAPP}?text=${encodeURIComponent(text)}`
-    window.open(whatsappUrl, '_blank')
-    setSubmitted(true)
+      setLastSubmittedType('donate')
+      setSubmitted(true)
+      setDonateData({
+        fullName: '',
+        phone: '',
+        city: '',
+        supportCategory: 'Sponsor Annadanam / Daily Meals',
+        contributionType: 'Financial Contribution',
+        message: '',
+      })
+    } catch (err) {
+      setErrorMsg(err.message || 'Something went wrong while sending your request. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const resetForm = () => {
@@ -166,7 +241,7 @@ Message: ${donateData.message || 'Interested in supporting'}`
 
                 <div className="pt-1 flex items-center gap-2.5 text-xs text-[#F5C284]">
                   <CheckCircle2 className="w-4 h-4 text-[#D98B3A]" />
-                  <span>100% Direct WhatsApp Coordination</span>
+                  <span>Direct Online Submission & Trustee Coordination</span>
                 </div>
               </div>
             </div>
@@ -187,17 +262,34 @@ Message: ${donateData.message || 'Interested in supporting'}`
                       Thank You for Reaching Out!
                     </h3>
                     <p className="font-body text-sm text-[#24332B]/80 leading-relaxed">
-                      We have opened WhatsApp to connect you directly with our trustees and coordination desk. Your willingness to serve strengthens our entire community.
+                      {lastSubmittedType === 'volunteer'
+                        ? 'Thank you for your interest in volunteering with Om Charitable Trust. We will get in touch with you soon.'
+                        : 'Thank you for your support. We will get in touch with you soon.'}
                     </p>
                   </div>
-                  <button
-                    type="button"
-                    onClick={resetForm}
-                    className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#1F5D42] text-white text-xs font-semibold shadow hover:bg-[#164430] transition-colors"
-                  >
-                    <span>Send Another Inquiry</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </button>
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                    <button
+                      type="button"
+                      onClick={resetForm}
+                      className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#1F5D42] text-white text-xs font-semibold shadow hover:bg-[#164430] transition-colors cursor-pointer"
+                    >
+                      <span>Submit Another Inquiry</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                    <a
+                      href={`https://wa.me/${TRUST_WHATSAPP}?text=${encodeURIComponent(
+                        lastSubmittedType === 'volunteer'
+                          ? 'Hello Om Charitable Trust, I just submitted a volunteer application on your website.'
+                          : 'Hello Om Charitable Trust, I just submitted a donation & support inquiry on your website.'
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#FFF9F0] border border-[#1F5D42]/20 text-[#1F5D42] text-xs font-semibold hover:bg-[#F1F6F1] transition-colors cursor-pointer"
+                    >
+                      <MessageSquare className="w-3.5 h-3.5 text-[#25D366]" />
+                      <span>Also Connect on WhatsApp</span>
+                    </a>
+                  </div>
                 </div>
               ) : (
                 /* Interactive Form Fields */
@@ -205,6 +297,7 @@ Message: ${donateData.message || 'Interested in supporting'}`
                   onSubmit={activeTab === 'volunteer' ? handleVolunteerSubmit : handleDonateSubmit}
                   className="space-y-5"
                 >
+                  <input type="checkbox" name="botcheck" className="hidden" style={{ display: 'none' }} />
                   {/* Form Header Title */}
                   <div className="border-b border-[#1F5D42]/10 pb-4">
                     <div className="flex items-center justify-between">
@@ -217,7 +310,7 @@ Message: ${donateData.message || 'Interested in supporting'}`
                         <p className="text-xs sm:text-sm text-[#24332B]/70 mt-1">
                           {activeTab === 'volunteer'
                             ? 'Submit your details to join our next grassroots relief drive.'
-                            : 'Direct coordination via WhatsApp for material or financial support.'}
+                            : 'Submit your details to coordinate material or financial support.'}
                         </p>
                       </div>
                       <span
@@ -397,23 +490,32 @@ Message: ${donateData.message || 'Interested in supporting'}`
                     />
                   </div>
 
-                  {/* Submit Button & Direct WhatsApp Trigger */}
+                  {/* Submit Button & Direct Web3Forms Trigger */}
                   <div className="pt-2">
                     <button
                       type="submit"
-                      className={`w-full py-4 rounded-2xl text-white font-heading font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer ${
+                      disabled={isSubmitting}
+                      className={`w-full py-4 rounded-2xl text-white font-heading font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-75 disabled:cursor-not-allowed cursor-pointer ${
                         activeTab === 'volunteer'
                           ? 'bg-[#1F5D42] hover:bg-[#164430]'
                           : 'bg-[#D98B3A] hover:bg-[#C47A2D]'
                       }`}
                     >
-                      <MessageSquare className="w-4 h-4" />
-                      <span>
-                        {activeTab === 'volunteer'
-                          ? 'Submit Volunteer Request via WhatsApp'
-                          : 'Send Support Inquiry via WhatsApp'}
-                      </span>
-                      <Send className="w-4 h-4 ml-1" />
+                      {isSubmitting ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          <span>Sending...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Send className="w-4 h-4" />
+                          <span>
+                            {activeTab === 'volunteer'
+                              ? 'Submit Volunteer Application'
+                              : 'Submit Support Inquiry'}
+                          </span>
+                        </>
+                      )}
                     </button>
 
                     <div className="flex items-center justify-center gap-2 mt-3 text-[11px] text-[#24332B]/75 text-center flex-wrap">
