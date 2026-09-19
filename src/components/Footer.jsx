@@ -1,8 +1,11 @@
 import { Phone, MessageSquare, Mail, MapPin, Heart } from 'lucide-react'
 
 export default function Footer() {
-  const TRUST_PHONE = '+91 84000 46265'
-  const TRUST_WHATSAPP = '918400046265'
+  const TRUST_PHONE = '+91 8948038888'
+  const TRUST_WHATSAPP = '918948038888'
+  const TRUST_EMAIL = 'anitasinghrathore@gmail.com'
+  const TRUST_ADDRESS = '21/1100, Sector 21, Indira Nagar, Lucknow - 226012'
+  const TRUST_LANDMARK = 'Opposite Sherwood College'
 
   return (
     <footer className="bg-[#143B2B] text-white pt-12 pb-6 border-t border-white/10 select-none">
@@ -122,7 +125,7 @@ export default function Footer() {
             <h4 className="font-heading font-bold text-sm uppercase tracking-wider text-[#F5C284]">
               Direct Contact
             </h4>
-            <ul className="space-y-3 text-xs sm:text-sm text-[#F1F6F1]/85">
+            <ul className="space-y-2.5 text-xs sm:text-sm text-[#F1F6F1]/85">
               <li className="flex items-center gap-2.5">
                 <Phone className="w-4 h-4 text-[#D98B3A] shrink-0" />
                 <a href={`tel:${TRUST_PHONE.replace(/\s+/g, '')}`} className="hover:text-[#D98B3A] transition-colors">
@@ -142,13 +145,16 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-2.5">
                 <Mail className="w-4 h-4 text-[#D98B3A] shrink-0" />
-                <a href="mailto:contact@omcharitabletrust.org" className="hover:text-[#D98B3A] transition-colors">
-                  contact@omcharitabletrust.org
+                <a href={`mailto:${TRUST_EMAIL}`} className="hover:text-[#D98B3A] transition-colors break-all">
+                  {TRUST_EMAIL}
                 </a>
               </li>
               <li className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 text-[#D98B3A] shrink-0 mt-0.5" />
-                <span>Registered in Uttar Pradesh, India</span>
+                <div className="text-left text-xs leading-relaxed text-[#F1F6F1]/90">
+                  <p>{TRUST_ADDRESS}</p>
+                  <p className="text-[#F5C284] text-[11px] font-medium">{TRUST_LANDMARK}</p>
+                </div>
               </li>
             </ul>
           </div>
@@ -160,9 +166,9 @@ export default function Footer() {
           <div>
             © {new Date().getFullYear()} Om Charitable Trust. All Rights Reserved.
           </div>
-          <div className="flex items-center gap-6">
+          <div className="flex flex-wrap items-center gap-4 sm:gap-6">
+            <span className="text-[#F5C284] font-medium">Approval Under Section 80G(5)(vi) & 12AA of Income Tax Act, 1961</span>
             <span>Registered Non-Profit Charitable Trust</span>
-            <span>Grassroots Community Action</span>
           </div>
         </div>
 

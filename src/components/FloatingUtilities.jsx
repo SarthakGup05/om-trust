@@ -4,8 +4,8 @@ import { Phone, ArrowUp } from 'lucide-react'
 export default function FloatingUtilities() {
   const [showScrollTop, setShowScrollTop] = useState(false)
 
-  const TRUST_PHONE = '+918400046265'
-  const TRUST_WHATSAPP = '918400046265'
+  const TRUST_PHONE = '+918948038888'
+  const TRUST_WHATSAPP = '918948038888'
 
   useEffect(() => {
     const handleScroll = () => {
@@ -56,7 +56,7 @@ export default function FloatingUtilities() {
 
         {/* Tooltip */}
         <span className="pointer-events-none absolute right-full mr-3 px-2.5 py-1 rounded-lg bg-[#143B2B] text-white text-xs font-medium whitespace-nowrap shadow-md opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 transition-all duration-200 hidden sm:block">
-          Call: +91 84000 46265
+          Call: +91 8948038888
         </span>
       </a>
 
@@ -68,8 +68,8 @@ export default function FloatingUtilities() {
         aria-label="Chat with Om Charitable Trust on WhatsApp"
         className="group relative flex items-center justify-center w-12 h-12 sm:w-13 sm:h-13 rounded-full bg-[#25D366] hover:bg-[#20bd5a] text-white shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 active:scale-95 cursor-pointer ring-4 ring-[#25D366]/30"
       >
-        {/* Subtle breathing ripple pulse */}
-        <span className="absolute -inset-1 rounded-full bg-[#25D366] opacity-30 animate-ping pointer-events-none" />
+        {/* Subtle breathing ripple pulse (desktop only) */}
+        <span className="hidden md:block absolute -inset-1 rounded-full bg-[#25D366] opacity-30 md:animate-ping pointer-events-none" />
 
         {/* Crisp Official WhatsApp SVG Icon */}
         <svg

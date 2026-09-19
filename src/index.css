@@ -60,5 +60,43 @@ h1, h2, h3, h4, h5, h6 {
   filter: drop-shadow(0 0 4px #D98B3A);
 }
 
+/* Mobile Performance Optimization - Disable heavy continuous animations & GPU filters */
+@media (max-width: 768px) {
+  /* Stop infinite looping animations that tax mobile CPUs and GPUs */
+  .timeline-beam,
+  .timeline-beam-thin,
+  .animate-ping,
+  .animate-pulse,
+  .animate-bounce {
+    animation: none !important;
+  }
 
+  /* Optimize transitions on mobile for instant responsiveness */
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
 
+  /* Disable heavy GPU backdrop blurs and deep filter blurs on mobile devices */
+  .backdrop-blur-md,
+  .backdrop-blur-sm,
+  .backdrop-blur-lg,
+  .backdrop-blur {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  .blur-3xl {
+    filter: none !important;
+    display: none !important;
+  }
+}
+
+/* Standard accessibility reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

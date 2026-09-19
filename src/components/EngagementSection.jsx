@@ -28,8 +28,8 @@ export default function EngagementSection() {
   const [submitted, setSubmitted] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
 
-  // WhatsApp Destination Number (Trust contact coordination)
-  const TRUST_WHATSAPP = '918400046265' // Official Om Charitable Trust WhatsApp number
+  // WhatsApp Destination Number (Official Om Charitable Trust WhatsApp number from receipt)
+  const TRUST_WHATSAPP = '918948038888'
 
   const handleVolunteerSubmit = (e) => {
     e.preventDefault()
@@ -80,9 +80,9 @@ Message: ${donateData.message || 'Interested in supporting'}`
 
   return (
     <section id="volunteer" className="py-12 lg:py-16 bg-[#F1F6F1] relative overflow-hidden">
-      {/* Background ambient accents */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#1F5D42]/5 rounded-full filter blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[#D98B3A]/10 rounded-full filter blur-3xl pointer-events-none" />
+      {/* Background ambient accents (desktop only for performance) */}
+      <div className="hidden md:block absolute top-0 left-1/4 w-96 h-96 bg-[#1F5D42]/5 rounded-full filter blur-3xl pointer-events-none" />
+      <div className="hidden md:block absolute bottom-0 right-1/4 w-96 h-96 bg-[#D98B3A]/10 rounded-full filter blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
@@ -416,9 +416,9 @@ Message: ${donateData.message || 'Interested in supporting'}`
                       <Send className="w-4 h-4 ml-1" />
                     </button>
 
-                    <div className="flex items-center justify-center gap-2 mt-3 text-[11px] text-[#24332B]/60">
-                      <ShieldCheck className="w-3.5 h-3.5 text-[#1F5D42]" />
-                      <span>No online payments or logins. Direct connection with Trust trustees.</span>
+                    <div className="flex items-center justify-center gap-2 mt-3 text-[11px] text-[#24332B]/75 text-center flex-wrap">
+                      <ShieldCheck className="w-3.5 h-3.5 text-[#1F5D42] shrink-0" />
+                      <span>Direct connection with Trust trustees • Eligible for Tax Benefits under Section 80G(5)(vi) & 12AA</span>
                     </div>
                   </div>
 

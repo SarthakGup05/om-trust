@@ -80,9 +80,9 @@ export default function JourneySection() {
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      {/* Decorative ambient gradients */}
-      <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#1F5D42]/5 rounded-full filter blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-[#D98B3A]/10 rounded-full filter blur-3xl pointer-events-none" />
+      {/* Decorative ambient gradients (hidden on mobile for performance) */}
+      <div className="hidden md:block absolute top-0 right-1/4 w-96 h-96 bg-[#1F5D42]/5 rounded-full filter blur-3xl pointer-events-none" />
+      <div className="hidden md:block absolute bottom-0 left-1/4 w-96 h-96 bg-[#D98B3A]/10 rounded-full filter blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         
@@ -92,7 +92,7 @@ export default function JourneySection() {
             <Calendar className="w-3.5 h-3.5 text-[#D98B3A]" />
             <span>Our Living Journey</span>
             <span className="flex h-2 w-2 relative ml-1">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D98B3A] opacity-75"></span>
+              <span className="md:animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D98B3A] opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-[#D98B3A]"></span>
             </span>
           </div>
@@ -205,8 +205,8 @@ export default function JourneySection() {
               >
                 {/* Active Pulsing Indicator Badge */}
                 {isActive && (
-                  <div className="absolute -top-3 right-6 px-3 py-0.5 rounded-full bg-[#D98B3A] text-white text-[10px] font-bold uppercase tracking-wider shadow-sm flex items-center gap-1.5 animate-bounce">
-                    <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span>
+                  <div className="absolute -top-3 right-6 px-3 py-0.5 rounded-full bg-[#D98B3A] text-white text-[10px] font-bold uppercase tracking-wider shadow-sm flex items-center gap-1.5 md:animate-bounce">
+                    <span className="w-1.5 h-1.5 rounded-full bg-white md:animate-ping"></span>
                     <span>In Focus</span>
                   </div>
                 )}

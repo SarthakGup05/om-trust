@@ -10,8 +10,11 @@ export default function ContactSection() {
   const [submitted, setSubmitted] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
 
-  const TRUST_PHONE = '+91 84000 46265'
-  const TRUST_WHATSAPP = '918400046265'
+  const TRUST_PHONE = '+91 8948038888'
+  const TRUST_WHATSAPP = '918948038888'
+  const TRUST_EMAIL = 'anitasinghrathore@gmail.com'
+  const TRUST_ADDRESS = '21/1100, Sector 21, Indira Nagar, Lucknow 226012'
+  const TRUST_LANDMARK = 'Opposite Sherwood College'
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -33,9 +36,9 @@ Message: ${formData.message}`
 
   return (
     <section id="contact" className="py-12 lg:py-16 bg-[#F1F6F1] relative overflow-hidden">
-      {/* Decorative ambient background glows */}
-      <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#1F5D42]/5 rounded-full filter blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-[#D98B3A]/10 rounded-full filter blur-3xl pointer-events-none" />
+      {/* Decorative ambient background glows (hidden on mobile for performance) */}
+      <div className="hidden md:block absolute top-0 right-1/4 w-96 h-96 bg-[#1F5D42]/5 rounded-full filter blur-3xl pointer-events-none" />
+      <div className="hidden md:block absolute bottom-0 left-1/4 w-96 h-96 bg-[#D98B3A]/10 rounded-full filter blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
@@ -51,7 +54,7 @@ Message: ${formData.message}`
           </h2>
 
           <p className="font-body text-base sm:text-lg text-[#24332B]/80 leading-relaxed">
-            Have questions about our initiatives, want to coordinate a donation drive, or invite us to a care home? Contact Om Charitable Trust directly through phone or WhatsApp.
+            Have questions about our initiatives, want to coordinate a donation drive, or invite us to a care home? Visit our registered office or contact Om Charitable Trust directly through phone or WhatsApp.
           </p>
         </div>
 
@@ -61,9 +64,9 @@ Message: ${formData.message}`
           {/* Phone */}
           <a
             href={`tel:${TRUST_PHONE.replace(/\s+/g, '')}`}
-            className="bg-white rounded-3xl p-4 sm:p-5 border border-[#1F5D42]/10 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all text-left flex flex-col justify-between group"
+            className="bg-white rounded-3xl p-4 sm:p-5 border border-[#1F5D42]/10 shadow-sm md:hover:shadow-md md:hover:-translate-y-1 transition-all text-left flex flex-col justify-between group"
           >
-            <div className="w-11 h-11 rounded-2xl bg-[#FFF9F0] text-[#D98B3A] flex items-center justify-center mb-3 group-hover:bg-[#1F5D42] group-hover:text-white transition-colors">
+            <div className="w-11 h-11 rounded-2xl bg-[#FFF9F0] text-[#D98B3A] flex items-center justify-center mb-3 md:group-hover:bg-[#1F5D42] md:group-hover:text-white transition-colors">
               <Phone className="w-5 h-5" />
             </div>
             <div>
@@ -82,9 +85,9 @@ Message: ${formData.message}`
             href={`https://wa.me/${TRUST_WHATSAPP}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-white rounded-3xl p-4 sm:p-5 border border-[#1F5D42]/10 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all text-left flex flex-col justify-between group"
+            className="bg-white rounded-3xl p-4 sm:p-5 border border-[#1F5D42]/10 shadow-sm md:hover:shadow-md md:hover:-translate-y-1 transition-all text-left flex flex-col justify-between group"
           >
-            <div className="w-11 h-11 rounded-2xl bg-[#F1F6F1] text-[#1F5D42] flex items-center justify-center mb-3 group-hover:bg-[#D98B3A] group-hover:text-white transition-colors">
+            <div className="w-11 h-11 rounded-2xl bg-[#F1F6F1] text-[#1F5D42] flex items-center justify-center mb-3 md:group-hover:bg-[#D98B3A] md:group-hover:text-white transition-colors">
               <MessageSquare className="w-5 h-5" />
             </div>
             <div>
@@ -100,20 +103,20 @@ Message: ${formData.message}`
 
           {/* Email */}
           <a
-            href="mailto:contact@omcharitabletrust.org"
-            className="bg-white rounded-3xl p-4 sm:p-5 border border-[#1F5D42]/10 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all text-left flex flex-col justify-between group"
+            href={`mailto:${TRUST_EMAIL}`}
+            className="bg-white rounded-3xl p-4 sm:p-5 border border-[#1F5D42]/10 shadow-sm md:hover:shadow-md md:hover:-translate-y-1 transition-all text-left flex flex-col justify-between group"
           >
-            <div className="w-11 h-11 rounded-2xl bg-[#FFF9F0] text-[#D98B3A] flex items-center justify-center mb-3 group-hover:bg-[#1F5D42] group-hover:text-white transition-colors">
+            <div className="w-11 h-11 rounded-2xl bg-[#FFF9F0] text-[#D98B3A] flex items-center justify-center mb-3 md:group-hover:bg-[#1F5D42] md:group-hover:text-white transition-colors">
               <Mail className="w-5 h-5" />
             </div>
             <div>
               <div className="text-[11px] font-bold uppercase tracking-wider text-[#24332B]/60 mb-0.5">
-                Email
+                Official Email
               </div>
-              <div className="font-heading font-bold text-sm text-[#1F5D42] truncate">
-                contact@omcharitabletrust.org
+              <div className="font-heading font-bold text-sm text-[#1F5D42] break-all">
+                {TRUST_EMAIL}
               </div>
-              <p className="text-xs text-[#24332B]/70 mt-0.5">For official communications</p>
+              <p className="text-xs text-[#24332B]/70 mt-0.5">Official communication desk</p>
             </div>
           </a>
 
@@ -124,17 +127,35 @@ Message: ${formData.message}`
             </div>
             <div>
               <div className="text-[11px] font-bold uppercase tracking-wider text-[#24332B]/60 mb-0.5">
-                Location
+                Registered Office
               </div>
-              <div className="font-heading font-bold text-base text-[#1F5D42]">
-                Uttar Pradesh, India
+              <div className="font-heading font-bold text-sm sm:text-base text-[#1F5D42] leading-snug">
+                21/1100, Sector 21, Indira Nagar
               </div>
-              <p className="text-[11px] text-[#24332B]/60 mt-0.5 italic">
-                Registered office details available via WhatsApp
+              <p className="text-xs text-[#24332B]/80 mt-0.5 font-medium">
+                Lucknow 226012
+              </p>
+              <p className="text-[11px] text-[#D98B3A] font-semibold mt-0.5">
+                (Opposite Sherwood College)
               </p>
             </div>
           </div>
 
+        </div>
+
+        {/* Regulatory & Tax Exemption Banner */}
+        <div className="mb-8 p-3.5 sm:p-4 rounded-2xl bg-white border border-[#1F5D42]/15 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+          <div className="flex items-center gap-3">
+            <span className="px-2.5 py-1 rounded-lg bg-[#1F5D42] text-white text-xs font-heading font-bold tracking-wider uppercase">
+              Registered NGO
+            </span>
+            <span className="text-xs sm:text-sm text-[#24332B]/85 font-medium">
+              Approval Under Section <strong>80G(5)(vi)</strong> & Registration under Section <strong>12AA</strong> Of The Income Tax Act, 1961
+            </span>
+          </div>
+          <span className="text-[11px] font-semibold text-[#1F5D42] bg-[#F1F6F1] px-3 py-1 rounded-full border border-[#1F5D42]/20 whitespace-nowrap">
+            Tax Exemption Eligible
+          </span>
         </div>
 
         {/* Dual Layout: Contact Form & Google Maps */}
@@ -200,7 +221,7 @@ Message: ${formData.message}`
                     <input
                       type="tel"
                       required
-                      placeholder="+91 84000 46265"
+                      placeholder="+91 8948038888"
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                       className="w-full px-3.5 py-2.5 rounded-xl bg-[#FFF9F0] border border-[#1F5D42]/15 text-sm focus:outline-none focus:ring-2 focus:ring-[#1F5D42] text-[#24332B]"
@@ -244,11 +265,11 @@ Message: ${formData.message}`
               <div className="flex items-center gap-2 text-left">
                 <MapPin className="w-4 h-4 text-[#D98B3A]" />
                 <span className="font-heading font-bold text-sm text-[#1F5D42]">
-                  Om Charitable Trust Regional Location
+                  Registered Office Location
                 </span>
               </div>
               <span className="text-[11px] font-semibold text-[#24332B]/60 uppercase tracking-wider">
-                Uttar Pradesh
+                Indira Nagar, Lucknow
               </span>
             </div>
 
@@ -256,7 +277,7 @@ Message: ${formData.message}`
             <div className="flex-1 w-full relative min-h-[280px]">
               <iframe
                 title="Om Charitable Trust Location"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d456000!2d80.8!3d26.85!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x399bfd991f32b16b%3A0x93ccba8909978be7!2sLucknow%2C%20Uttar%20Pradesh!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+                src="https://maps.google.com/maps?q=21%2F1100%2C+Sector+21%2C+Indira+Nagar%2C+Lucknow%2C+Uttar+Pradesh+226012&t=&z=15&ie=UTF8&iwloc=&output=embed"
                 className="absolute inset-0 w-full h-full border-0"
                 allowFullScreen=""
                 loading="lazy"

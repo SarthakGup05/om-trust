@@ -9,9 +9,19 @@ export default function Navbar() {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20)
     }
-    window.addEventListener('scroll', handleScroll)
+    window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  // Auto-close mobile menu on desktop resize
+  useEffect(() => {
+    if (!mobileMenuOpen) return
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) setMobileMenuOpen(false)
+    }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [mobileMenuOpen])
 
   const navLinks = [
     { name: 'Home', href: '#home' },
@@ -25,7 +35,7 @@ export default function Navbar() {
   return (
     <header
       className={`sticky top-0 z-50 transition-all duration-300 ${
-        isScrolled
+        isScrolled || mobileMenuOpen
           ? 'bg-[#FFF9F0]/95 backdrop-blur-md shadow-sm border-b border-[#1F5D42]/10 py-3'
           : 'bg-[#FFF9F0] py-4'
       }`}
@@ -83,7 +93,7 @@ export default function Navbar() {
           <div className="flex lg:hidden items-center gap-3">
             <a
               href="#contact"
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#D98B3A] text-white font-medium text-xs shadow-sm"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#D98B3A] text-white font-medium text-xs shadow-sm active:scale-95 transition-transform"
             >
               <Heart className="w-3.5 h-3.5 fill-white" />
               <span>Support</span>
@@ -92,45 +102,62 @@ export default function Navbar() {
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-lg text-[#1F5D42] hover:bg-[#F1F6F1] transition-colors focus:outline-none focus:ring-2 focus:ring-[#1F5D42]"
+              className="p-2 rounded-xl text-[#1F5D42] hover:bg-[#F1F6F1] active:scale-90 transition-all focus:outline-none focus:ring-2 focus:ring-[#1F5D42]"
               aria-label="Toggle Navigation Menu"
               aria-expanded={mobileMenuOpen}
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              <div className="relative w-6 h-6 flex items-center justify-center">
+                <Menu
+                  className={`w-6 h-6 absolute transition-all duration-300 ease-out ${
+                    mobileMenuOpen
+                      ? 'opacity-0 rotate-90 scale-75'
+                      : 'opacity-100 rotate-0 scale-100'
+                  }`}
+                />
+                <X
+                  className={`w-6 h-6 absolute transition-all duration-300 ease-out ${
+                    mobileMenuOpen
+                      ? 'opacity-100 rotate-0 scale-100'
+                      : 'opacity-0 -rotate-90 scale-75'
+                  }`}
+                />
+              </div>
             </button>
           </div>
 
         </div>
       </div>
 
-      {/* Mobile Drawer / Dropdown */}
+      {/* Smooth Mobile Drawer / Dropdown using Grid 0fr -> 1fr */}
       <div
-        className={`lg:hidden transition-all duration-300 overflow-hidden ${
+        className={`lg:hidden grid transition-[grid-template-rows,opacity] duration-300 ease-out border-b border-[#1F5D42]/10 bg-[#FFF9F0] ${
           mobileMenuOpen
-            ? 'max-h-96 opacity-100 border-b border-[#1F5D42]/10 bg-[#FFF9F0]'
-            : 'max-h-0 opacity-0'
+            ? 'grid-rows-[1fr] opacity-100 shadow-lg'
+            : 'grid-rows-[0fr] opacity-0 border-transparent pointer-events-none'
         }`}
       >
-        <div className="px-4 pt-3 pb-6 space-y-2">
-          {navLinks.map((link) => (
-            <a
-              key={link.name}
-              href={link.href}
-              onClick={() => setMobileMenuOpen(false)}
-              className="block px-3 py-2.5 rounded-lg text-base font-medium text-[#24332B] hover:text-[#1F5D42] hover:bg-[#F1F6F1] transition-colors"
-            >
-              {link.name}
-            </a>
-          ))}
-          <div className="pt-2">
-            <a
-              href="#contact"
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl bg-[#D98B3A] text-white font-medium shadow-md"
-            >
-              <Heart className="w-4 h-4 fill-white" />
-              <span>Support Our Work</span>
-            </a>
+        <div className="overflow-hidden">
+          <div className="px-4 pt-2 pb-5 space-y-1">
+            {navLinks.map((link) => (
+              <a
+                key={link.name}
+                href={link.href}
+                onClick={() => setMobileMenuOpen(false)}
+                className="block px-3.5 py-2.5 rounded-xl text-base font-medium text-[#24332B] hover:text-[#1F5D42] hover:bg-[#F1F6F1] active:bg-[#1F5D42]/10 transition-colors"
+              >
+                {link.name}
+              </a>
+            ))}
+            <div className="pt-2">
+              <a
+                href="#contact"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl bg-[#D98B3A] hover:bg-[#C47A2D] text-white font-medium shadow-md active:scale-[0.98] transition-all"
+              >
+                <Heart className="w-4 h-4 fill-white" />
+                <span>Support Our Work</span>
+              </a>
+            </div>
           </div>
         </div>
       </div>

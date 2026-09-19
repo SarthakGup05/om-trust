@@ -21,9 +21,9 @@ export default function ImpactMissionSection() {
 
   return (
     <section id="impact" className="py-12 lg:py-16 bg-[#1F5D42] text-white relative overflow-hidden">
-      {/* Subtle ambient lighting */}
-      <div className="absolute top-0 right-0 -mr-24 -mt-24 w-96 h-96 rounded-full bg-[#D98B3A]/15 blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 left-0 -ml-24 -mb-24 w-96 h-96 rounded-full bg-[#143B2B] blur-3xl pointer-events-none" />
+      {/* Subtle ambient lighting (desktop only to preserve mobile rendering speed) */}
+      <div className="hidden md:block absolute top-0 right-0 -mr-24 -mt-24 w-96 h-96 rounded-full bg-[#D98B3A]/15 blur-3xl pointer-events-none" />
+      <div className="hidden md:block absolute bottom-0 left-0 -ml-24 -mb-24 w-96 h-96 rounded-full bg-[#143B2B] blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
@@ -56,7 +56,7 @@ export default function ImpactMissionSection() {
                 return (
                   <div
                     key={idx}
-                    className="flex items-start gap-3.5 p-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors"
+                    className="flex items-start gap-3.5 p-3 rounded-2xl bg-white/5 border border-white/10 md:hover:bg-white/10 md:transition-colors"
                   >
                     <div className="w-9 h-9 rounded-xl bg-[#D98B3A]/20 text-[#F5C284] flex items-center justify-center shrink-0 mt-0.5">
                       <IconComp className="w-4 h-4 text-[#D98B3A]" />
@@ -101,16 +101,16 @@ export default function ImpactMissionSection() {
               <img
                 src="/images/impact-mission-portrait.webp"
                 alt="Om Charitable Trust community volunteers and elders"
-                className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
+                className="w-full h-full object-cover object-center md:group-hover:scale-105 md:transition-transform md:duration-700 ease-out"
               />
               
               {/* Subtle natural vignette */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-transparent opacity-80 pointer-events-none" />
 
               {/* Floating Testimonial / Community Pill */}
-              <div className="absolute bottom-5 left-5 right-5 bg-black/60 backdrop-blur-md rounded-2xl p-4 border border-white/15 text-left text-white">
+              <div className="absolute bottom-5 left-5 right-5 bg-[#143B2B]/90 md:bg-black/60 md:backdrop-blur-md rounded-2xl p-4 border border-white/15 text-left text-white">
                 <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#F5C284] mb-1">
-                  <span className="w-2 h-2 rounded-full bg-[#D98B3A] animate-pulse"></span>
+                  <span className="w-2 h-2 rounded-full bg-[#D98B3A] md:animate-pulse"></span>
                   <span>Community in Action</span>
                 </div>
                 <p className="font-body text-xs sm:text-sm text-[#F1F6F1]/90 italic leading-relaxed">
