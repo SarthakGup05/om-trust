@@ -327,3 +327,100 @@ export const getDashboardStats = async (_req: Request, res: Response): Promise<v
     });
   }
 };
+
+/**
+ * Helper function to escape CSV cell fields according to RFC-4180
+ */
+const escapeCsv = (value: any): string => {
+  if (value === null || value === undefined) return '""';
+  const stringValue = String(value).replace(/"/g, '""');
+  return `"${stringValue}"`;
+};
+
+/**
+ * Admin: Export all or filtered leads to CSV.
+ * GET /api/leads/export
+ */
+export const exportLeadsCsv = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const search = ((req.query.search as string) || '').trim();
+    const type = ((req.query.type as string) || '').trim();
+    const status = ((req.query.status as string) || '').trim();
+
+    const filter: Record<string, any> = {};
+
+    if (type && type !== 'all') {
+      filter.type = type;
+    }
+
+    if (status && status !== 'all') {
+      filter.status = status;
+    }
+
+    if (search) {
+      const searchRegex = new RegExp(search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+      filter.$or = [
+        { name: searchRegex },
+        { phone: searchRegex },
+        { email: searchRegex },
+        { city: searchRegex },
+      ];
+    }
+
+    const leads = await Lead.find(filter).sort({ createdAt: -1 });
+
+    const headers = [
+      'Lead ID',
+      'Name',
+      'Phone',
+      'Email',
+      'City',
+      'Source Type',
+      'Status',
+      'Interest / Category',
+      'Submitted Message',
+      'Admin Notes',
+      'Created At (ISO)',
+      'Created Date (IST)',
+      'Last Updated (ISO)',
+    ];
+
+    const rows = leads.map((lead) => {
+      const istDate = new Date(lead.createdAt).toLocaleString('en-IN', {
+        timeZone: 'Asia/Kolkata',
+        dateStyle: 'medium',
+        timeStyle: 'short',
+      });
+
+      return [
+        escapeCsv(lead._id),
+        escapeCsv(lead.name),
+        escapeCsv(lead.phone),
+        escapeCsv(lead.email || ''),
+        escapeCsv(lead.city || ''),
+        escapeCsv(lead.type),
+        escapeCsv(lead.status),
+        escapeCsv(lead.interest || ''),
+        escapeCsv(lead.message || ''),
+        escapeCsv(lead.notes || ''),
+        escapeCsv(lead.createdAt.toISOString()),
+        escapeCsv(istDate),
+        escapeCsv(lead.updatedAt.toISOString()),
+      ].join(',');
+    });
+
+    const csvContent = [headers.join(','), ...rows].join('\r\n');
+    const filename = `om_trust_leads_${new Date().toISOString().slice(0, 10)}.csv`;
+
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.status(200).send(csvContent);
+  } catch (error) {
+    console.error('[Lead Controller] Error exporting CSV:', error instanceof Error ? error.message : error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to export leads to CSV',
+    });
+  }
+};
+

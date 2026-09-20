@@ -10,8 +10,10 @@ import {
   MessageSquare,
   Eye,
   RefreshCw,
+  Download,
+  CheckCircle,
 } from 'lucide-react';
-import { apiGetLeads } from '../services/api';
+import { apiGetLeads, apiExportLeadsCsv } from '../services/api';
 
 export const Leads = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -19,6 +21,8 @@ export const Leads = () => {
   const [leads, setLeads] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+  const [isExporting, setIsExporting] = useState(false);
+  const [exportToast, setExportToast] = useState(null);
 
   const [searchInput, setSearchInput] = useState(searchParams.get('search') || '');
   const [activeType, setActiveType] = useState(searchParams.get('type') || 'all');
@@ -128,6 +132,23 @@ export const Leads = () => {
     }
   };
 
+  const handleExportCsv = async () => {
+    setIsExporting(true);
+    try {
+      await apiExportLeadsCsv({
+        search: searchInput.trim(),
+        type: activeType,
+        status: activeStatus,
+      });
+      setExportToast('Leads exported successfully as CSV!');
+      setTimeout(() => setExportToast(null), 4000);
+    } catch (err) {
+      setError(err.message || 'Failed to export CSV.');
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   const cleanPhoneForWhatsApp = (rawPhone) => {
     const digits = (rawPhone || '').replace(/\D/g, '');
     if (digits.length === 10) return `91${digits}`;
@@ -147,15 +168,34 @@ export const Leads = () => {
           </p>
         </div>
 
-        <button
-          onClick={fetchLeads}
-          disabled={isLoading}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-gray-200 text-xs font-semibold text-[#24332B] hover:bg-gray-50 transition-colors shadow-xs cursor-pointer self-start sm:self-auto"
-        >
-          <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin text-[#1F5D42]' : ''}`} />
-          <span>Refresh</span>
-        </button>
+        <div className="flex items-center gap-2.5 self-start sm:self-auto">
+          <button
+            onClick={handleExportCsv}
+            disabled={isExporting || isLoading}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#1F5D42] text-white text-xs font-semibold hover:bg-[#164430] disabled:opacity-50 transition-all shadow-xs cursor-pointer"
+            title="Export filtered leads to a CSV spreadsheet"
+          >
+            <Download className={`w-3.5 h-3.5 ${isExporting ? 'animate-bounce' : ''}`} />
+            <span>{isExporting ? 'Exporting...' : 'Export CSV'}</span>
+          </button>
+
+          <button
+            onClick={fetchLeads}
+            disabled={isLoading}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-gray-200 text-xs font-semibold text-[#24332B] hover:bg-gray-50 transition-colors shadow-xs cursor-pointer"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin text-[#1F5D42]' : ''}`} />
+            <span>Refresh</span>
+          </button>
+        </div>
       </div>
+
+      {exportToast && (
+        <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold flex items-center gap-2 animate-in fade-in duration-200">
+          <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
+          <span>{exportToast}</span>
+        </div>
+      )}
 
       {error && (
         <div className="p-4 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-sm">

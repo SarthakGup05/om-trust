@@ -6,6 +6,7 @@ import {
   updateLead,
   deleteLead,
   getDashboardStats,
+  exportLeadsCsv,
 } from '../controllers/leadController.js';
 import { login, getMe, logout } from '../controllers/authController.js';
 import { authenticateAdmin } from '../middleware/auth.js';
@@ -36,6 +37,7 @@ router.get('/auth/me', authenticateAdmin, getMe);
 // ADMIN PROTECTED LEAD & DASHBOARD ROUTES
 // ==========================================
 router.get('/dashboard/stats', authenticateAdmin, getDashboardStats);
+router.get('/leads/export', authenticateAdmin, exportLeadsCsv);
 router.get('/leads', authenticateAdmin, getLeads);
 router.get('/leads/:id', authenticateAdmin, getLeadById);
 router.patch('/leads/:id', authenticateAdmin, updateLead);
