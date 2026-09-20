@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { Heart, HandHeart, CheckCircle2, MessageSquare, Send, ArrowRight, ShieldCheck, Loader2 } from 'lucide-react'
-import { submitToWeb3Forms, isValidPhone } from '../services/web3forms'
+import { Heart, HandHeart, CheckCircle2, MessageSquare, Send, ArrowRight, ShieldCheck, Loader2, AlertCircle } from 'lucide-react'
+import { isValidPhone } from '../services/web3forms'
+import { createLead } from '../services/api'
 
 export default function EngagementSection() {
   // Mode: 'volunteer' | 'donate'
@@ -34,6 +35,16 @@ export default function EngagementSection() {
   // WhatsApp Destination Number (Official Om Charitable Trust WhatsApp number from receipt)
   const TRUST_WHATSAPP = '918948038888'
 
+  const handleVolunteerChange = (field, value) => {
+    setVolunteerData((prev) => ({ ...prev, [field]: value }))
+    if (errorMsg) setErrorMsg('')
+  }
+
+  const handleDonateChange = (field, value) => {
+    setDonateData((prev) => ({ ...prev, [field]: value }))
+    if (errorMsg) setErrorMsg('')
+  }
+
   const handleVolunteerSubmit = async (e) => {
     e.preventDefault()
 
@@ -61,17 +72,13 @@ export default function EngagementSection() {
     setIsSubmitting(true)
 
     try {
-      await submitToWeb3Forms({
-        subject: 'New Volunteer Application - Om Charitable Trust',
-        formType: 'Volunteer Application',
-        data: {
-          'Full Name': trimmedName,
-          'Phone': trimmedPhone,
-          'City': trimmedCity,
-          'Area of Interest': volunteerData.areaOfInterest,
-          'Availability': volunteerData.availability,
-          'Message': trimmedMessage || 'Ready to serve',
-        },
+      await createLead({
+        name: trimmedName,
+        phone: trimmedPhone,
+        city: trimmedCity,
+        interest: volunteerData.areaOfInterest,
+        message: trimmedMessage ? `${trimmedMessage} (Availability: ${volunteerData.availability})` : `Availability: ${volunteerData.availability}`,
+        type: 'volunteer',
       })
 
       setLastSubmittedType('volunteer')
@@ -118,17 +125,13 @@ export default function EngagementSection() {
     setIsSubmitting(true)
 
     try {
-      await submitToWeb3Forms({
-        subject: 'New Support Request - Om Charitable Trust',
-        formType: 'Support & Donation Inquiry',
-        data: {
-          'Full Name / Organization': trimmedName,
-          'Phone': trimmedPhone,
-          'City': trimmedCity,
-          'Interested In': donateData.supportCategory,
-          'Preferred Contribution Mode': donateData.contributionType,
-          'Message': trimmedMessage || 'Interested in supporting',
-        },
+      await createLead({
+        name: trimmedName,
+        phone: trimmedPhone,
+        city: trimmedCity,
+        interest: donateData.supportCategory,
+        message: trimmedMessage ? `${trimmedMessage} (Contribution mode: ${donateData.contributionType})` : `Contribution mode: ${donateData.contributionType}`,
+        type: 'support',
       })
 
       setLastSubmittedType('donate')
@@ -326,8 +329,9 @@ export default function EngagementSection() {
                   </div>
 
                   {errorMsg && (
-                    <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-medium">
-                      {errorMsg}
+                    <div className="p-3.5 rounded-2xl bg-red-50 border border-red-300 text-red-700 text-xs font-semibold flex items-start gap-2.5 shadow-xs">
+                      <AlertCircle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+                      <span className="leading-snug">{errorMsg}</span>
                     </div>
                   )}
 
@@ -344,8 +348,8 @@ export default function EngagementSection() {
                         value={activeTab === 'volunteer' ? volunteerData.fullName : donateData.fullName}
                         onChange={(e) =>
                           activeTab === 'volunteer'
-                            ? setVolunteerData({ ...volunteerData, fullName: e.target.value })
-                            : setDonateData({ ...donateData, fullName: e.target.value })
+                            ? handleVolunteerChange('fullName', e.target.value)
+                            : handleDonateChange('fullName', e.target.value)
                         }
                         className="w-full px-4 py-3 rounded-xl bg-[#FFF9F0] border border-[#1F5D42]/15 text-sm focus:outline-none focus:ring-2 focus:ring-[#1F5D42] text-[#24332B]"
                       />
@@ -362,8 +366,8 @@ export default function EngagementSection() {
                         value={activeTab === 'volunteer' ? volunteerData.phone : donateData.phone}
                         onChange={(e) =>
                           activeTab === 'volunteer'
-                            ? setVolunteerData({ ...volunteerData, phone: e.target.value })
-                            : setDonateData({ ...donateData, phone: e.target.value })
+                            ? handleVolunteerChange('phone', e.target.value)
+                            : handleDonateChange('phone', e.target.value)
                         }
                         className="w-full px-4 py-3 rounded-xl bg-[#FFF9F0] border border-[#1F5D42]/15 text-sm focus:outline-none focus:ring-2 focus:ring-[#1F5D42] text-[#24332B]"
                       />
@@ -383,8 +387,8 @@ export default function EngagementSection() {
                         value={activeTab === 'volunteer' ? volunteerData.city : donateData.city}
                         onChange={(e) =>
                           activeTab === 'volunteer'
-                            ? setVolunteerData({ ...volunteerData, city: e.target.value })
-                            : setDonateData({ ...donateData, city: e.target.value })
+                            ? handleVolunteerChange('city', e.target.value)
+                            : handleDonateChange('city', e.target.value)
                         }
                         className="w-full px-4 py-3 rounded-xl bg-[#FFF9F0] border border-[#1F5D42]/15 text-sm focus:outline-none focus:ring-2 focus:ring-[#1F5D42] text-[#24332B]"
                       />
@@ -398,7 +402,7 @@ export default function EngagementSection() {
                       {activeTab === 'volunteer' ? (
                         <select
                           value={volunteerData.areaOfInterest}
-                          onChange={(e) => setVolunteerData({ ...volunteerData, areaOfInterest: e.target.value })}
+                          onChange={(e) => handleVolunteerChange('areaOfInterest', e.target.value)}
                           className="w-full px-4 py-3 rounded-xl bg-[#FFF9F0] border border-[#1F5D42]/15 text-sm focus:outline-none focus:ring-2 focus:ring-[#1F5D42] text-[#24332B]"
                         >
                           <option value="Food & Nutrition">Food & Nutrition Support</option>
@@ -411,7 +415,7 @@ export default function EngagementSection() {
                       ) : (
                         <select
                           value={donateData.supportCategory}
-                          onChange={(e) => setDonateData({ ...donateData, supportCategory: e.target.value })}
+                          onChange={(e) => handleDonateChange('supportCategory', e.target.value)}
                           className="w-full px-4 py-3 rounded-xl bg-[#FFF9F0] border border-[#1F5D42]/15 text-sm focus:outline-none focus:ring-2 focus:ring-[#D98B3A] text-[#24332B]"
                         >
                           <option value="Sponsor Annadanam / Daily Meals">Sponsor Annadanam / Daily Meals</option>
@@ -435,7 +439,7 @@ export default function EngagementSection() {
                           <button
                             key={avail}
                             type="button"
-                            onClick={() => setVolunteerData({ ...volunteerData, availability: avail })}
+                            onClick={() => handleVolunteerChange('availability', avail)}
                             className={`px-3 py-2 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
                               volunteerData.availability === avail
                                 ? 'bg-[#1F5D42] text-white border-[#1F5D42]'
@@ -452,7 +456,7 @@ export default function EngagementSection() {
                           <button
                             key={cType}
                             type="button"
-                            onClick={() => setDonateData({ ...donateData, contributionType: cType })}
+                            onClick={() => handleDonateChange('contributionType', cType)}
                             className={`px-3 py-2 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
                               donateData.contributionType === cType
                                 ? 'bg-[#D98B3A] text-white border-[#D98B3A]'
@@ -483,8 +487,8 @@ export default function EngagementSection() {
                       value={activeTab === 'volunteer' ? volunteerData.message : donateData.message}
                       onChange={(e) =>
                         activeTab === 'volunteer'
-                          ? setVolunteerData({ ...volunteerData, message: e.target.value })
-                          : setDonateData({ ...donateData, message: e.target.value })
+                          ? handleVolunteerChange('message', e.target.value)
+                          : handleDonateChange('message', e.target.value)
                       }
                       className="w-full px-4 py-3 rounded-xl bg-[#FFF9F0] border border-[#1F5D42]/15 text-sm focus:outline-none focus:ring-2 focus:ring-[#1F5D42] text-[#24332B] resize-none"
                     />

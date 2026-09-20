@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { Phone, MessageSquare, Mail, MapPin, Send, CheckCircle2, Clock, Loader2 } from 'lucide-react'
-import { submitToWeb3Forms, isValidPhone } from '../services/web3forms'
+import { Phone, MessageSquare, Mail, MapPin, Send, CheckCircle2, Clock, Loader2, AlertCircle } from 'lucide-react'
+import { isValidPhone } from '../services/web3forms'
+import { createLead } from '../services/api'
 
 export default function ContactSection() {
   const [formData, setFormData] = useState({
@@ -15,6 +16,11 @@ export default function ContactSection() {
   const TRUST_PHONE = '+91 8948038888'
   const TRUST_WHATSAPP = '918948038888'
   const TRUST_EMAIL = 'anitasinghrathore@gmail.com'
+
+  const handleInputChange = (field, value) => {
+    setFormData((prev) => ({ ...prev, [field]: value }))
+    if (errorMsg) setErrorMsg('')
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -42,14 +48,11 @@ export default function ContactSection() {
     setIsSubmitting(true)
 
     try {
-      await submitToWeb3Forms({
-        subject: 'New Contact Inquiry - Om Charitable Trust',
-        formType: 'Contact Us',
-        data: {
-          'Name': trimmedName,
-          'Phone': trimmedPhone,
-          'Message': trimmedMessage,
-        },
+      await createLead({
+        name: trimmedName,
+        phone: trimmedPhone,
+        message: trimmedMessage,
+        type: 'contact',
       })
 
       setSubmitted(true)
@@ -235,8 +238,9 @@ export default function ContactSection() {
                   <input type="checkbox" name="botcheck" className="hidden" style={{ display: 'none' }} />
 
                   {errorMsg && (
-                    <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-medium">
-                      {errorMsg}
+                    <div className="p-3.5 rounded-xl bg-red-50 border border-red-300 text-red-700 text-xs font-semibold flex items-start gap-2.5 shadow-xs">
+                      <AlertCircle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+                      <span className="leading-snug">{errorMsg}</span>
                     </div>
                   )}
 
@@ -249,7 +253,7 @@ export default function ContactSection() {
                       required
                       placeholder="e.g. Priya Verma"
                       value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      onChange={(e) => handleInputChange('name', e.target.value)}
                       className="w-full px-3.5 py-2.5 rounded-xl bg-[#FFF9F0] border border-[#1F5D42]/15 text-sm focus:outline-none focus:ring-2 focus:ring-[#1F5D42] text-[#24332B]"
                     />
                   </div>
@@ -263,7 +267,7 @@ export default function ContactSection() {
                       required
                       placeholder="+91 8948038888"
                       value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      onChange={(e) => handleInputChange('phone', e.target.value)}
                       className="w-full px-3.5 py-2.5 rounded-xl bg-[#FFF9F0] border border-[#1F5D42]/15 text-sm focus:outline-none focus:ring-2 focus:ring-[#1F5D42] text-[#24332B]"
                     />
                   </div>
@@ -277,7 +281,7 @@ export default function ContactSection() {
                       required
                       placeholder="Write your message or inquiry here..."
                       value={formData.message}
-                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                      onChange={(e) => handleInputChange('message', e.target.value)}
                       className="w-full px-3.5 py-2.5 rounded-xl bg-[#FFF9F0] border border-[#1F5D42]/15 text-sm focus:outline-none focus:ring-2 focus:ring-[#1F5D42] text-[#24332B] resize-none"
                     />
                   </div>
