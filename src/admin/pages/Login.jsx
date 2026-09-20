@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { useNavigate, Navigate } from 'react-router-dom';
+import { useNavigate, Navigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { HeartHandshake, Lock, Mail, Loader2, AlertCircle } from 'lucide-react';
+import { HeartHandshake, Lock, Mail, Loader2, AlertCircle, ArrowLeft } from 'lucide-react';
 
-export const Login: React.FC = () => {
+export const Login = () => {
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
@@ -13,10 +13,10 @@ export const Login: React.FC = () => {
   const [errorMsg, setErrorMsg] = useState('');
 
   if (isAuthenticated) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/admin" replace />;
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMsg('');
 
@@ -29,8 +29,8 @@ export const Login: React.FC = () => {
 
     try {
       await login(email.trim(), password);
-      navigate('/dashboard');
-    } catch (err: any) {
+      navigate('/admin');
+    } catch (err) {
       setErrorMsg(err.message || 'Invalid email or password. Please try again.');
     } finally {
       setIsSubmitting(false);
@@ -40,6 +40,17 @@ export const Login: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#FFF9F0] flex flex-col justify-center items-center px-4 sm:px-6 py-12">
       <div className="w-full max-w-md">
+        {/* Back to Public Website link */}
+        <div className="mb-6">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1F5D42] hover:text-[#164430] transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>Back to Public Website</span>
+          </Link>
+        </div>
+
         {/* Logo and Brand Title */}
         <div className="text-center mb-8">
           <div className="w-14 h-14 rounded-2xl bg-[#1F5D42] text-[#D98B3A] flex items-center justify-center mx-auto mb-4 shadow-lg shadow-[#1F5D42]/20">
@@ -65,7 +76,7 @@ export const Login: React.FC = () => {
           </div>
 
           {errorMsg && (
-            <div className="mb-5 p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-medium flex items-start gap-2.5">
+            <div className="mb-5 p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-semibold flex items-start gap-2.5">
               <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
               <span>{errorMsg}</span>
             </div>

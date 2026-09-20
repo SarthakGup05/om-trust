@@ -14,13 +14,13 @@ import {
   Heart,
   ChevronRight,
 } from 'lucide-react';
-import { apiGetDashboardStats, DashboardStats, Lead } from '../services/api';
+import { apiGetDashboardStats } from '../services/api';
 
-export const Dashboard: React.FC = () => {
-  const [stats, setStats] = useState<DashboardStats | null>(null);
-  const [recentLeads, setRecentLeads] = useState<Lead[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string>('');
+export const Dashboard = () => {
+  const [stats, setStats] = useState(null);
+  const [recentLeads, setRecentLeads] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState('');
 
   const fetchStats = async () => {
     setIsLoading(true);
@@ -31,7 +31,7 @@ export const Dashboard: React.FC = () => {
         setStats(res.stats);
         setRecentLeads(res.recentLeads || []);
       }
-    } catch (err: any) {
+    } catch (err) {
       setError(err.message || 'Failed to load dashboard statistics.');
     } finally {
       setIsLoading(false);
@@ -42,7 +42,7 @@ export const Dashboard: React.FC = () => {
     fetchStats();
   }, []);
 
-  const getStatusBadge = (status: Lead['status']) => {
+  const getStatusBadge = (status) => {
     switch (status) {
       case 'new':
         return 'bg-blue-50 text-blue-700 border-blue-200';
@@ -59,7 +59,7 @@ export const Dashboard: React.FC = () => {
     }
   };
 
-  const getTypeBadge = (type: Lead['type']) => {
+  const getTypeBadge = (type) => {
     switch (type) {
       case 'volunteer':
         return 'bg-[#1F5D42]/10 text-[#1F5D42]';
@@ -249,7 +249,7 @@ export const Dashboard: React.FC = () => {
           </div>
 
           <Link
-            to="/leads"
+            to="/admin/leads"
             className="inline-flex items-center gap-1.5 text-xs font-bold text-[#1F5D42] hover:text-[#164430] hover:underline"
           >
             <span>View All Leads</span>
@@ -314,7 +314,7 @@ export const Dashboard: React.FC = () => {
                     </td>
                     <td className="py-3 px-4 text-right whitespace-nowrap">
                       <Link
-                        to={`/leads/${lead._id || lead.id}`}
+                        to={`/admin/leads/${lead._id || lead.id}`}
                         className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-[#F1F6F1] hover:bg-[#1F5D42] text-[#1F5D42] hover:text-white text-xs font-semibold transition-colors"
                       >
                         <span>View</span>

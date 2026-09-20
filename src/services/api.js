@@ -69,7 +69,24 @@ export const createLead = async (leadData) => {
           }
           throw new Error(directData.message || 'Submission failed.');
         } catch {
-          // Both failed
+          // If localhost failed, try live Render backend as fallback
+          try {
+            const renderResponse = await fetch('https://om-trust.onrender.com/api/leads', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+              },
+              body: JSON.stringify(leadData),
+            });
+            const renderData = await renderResponse.json().catch(() => ({}));
+            if (renderResponse.ok) {
+              return renderData;
+            }
+            throw new Error(renderData.message || 'Submission failed.');
+          } catch {
+            // Both failed
+          }
         }
       }
 

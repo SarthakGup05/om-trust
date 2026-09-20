@@ -5,7 +5,6 @@ import {
   Phone,
   MessageSquare,
   Mail,
-  MapPin,
   Clock,
   Calendar,
   Trash2,
@@ -20,28 +19,27 @@ import {
   apiGetLeadById,
   apiUpdateLead,
   apiDeleteLead,
-  Lead,
 } from '../services/api';
 
-export const LeadDetail: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+export const LeadDetail = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
 
-  const [lead, setLead] = useState<Lead | null>(null);
-  const [relatedLeads, setRelatedLeads] = useState<Lead[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string>('');
+  const [lead, setLead] = useState(null);
+  const [relatedLeads, setRelatedLeads] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState('');
 
   // Status & Notes editable state
-  const [selectedStatus, setSelectedStatus] = useState<Lead['status']>('new');
-  const [notes, setNotes] = useState<string>('');
-  const [isUpdatingStatus, setIsUpdatingStatus] = useState<boolean>(false);
-  const [isSavingNotes, setIsSavingNotes] = useState<boolean>(false);
-  const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+  const [selectedStatus, setSelectedStatus] = useState('new');
+  const [notes, setNotes] = useState('');
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+  const [isSavingNotes, setIsSavingNotes] = useState(false);
+  const [notification, setNotification] = useState(null);
 
   // Delete modal confirmation
-  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
-  const [isDeleting, setIsDeleting] = useState<boolean>(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -57,7 +55,7 @@ export const LeadDetail: React.FC = () => {
           setNotes(res.lead.notes || '');
           setRelatedLeads(res.relatedLeads || []);
         }
-      } catch (err: any) {
+      } catch (err) {
         setError(err.message || 'Failed to load lead details.');
       } finally {
         setIsLoading(false);
@@ -67,12 +65,12 @@ export const LeadDetail: React.FC = () => {
     fetchDetail();
   }, [id]);
 
-  const showToast = (message: string, type: 'success' | 'error' = 'success') => {
+  const showToast = (message, type = 'success') => {
     setNotification({ message, type });
     setTimeout(() => setNotification(null), 4000);
   };
 
-  const handleStatusChange = async (newStatus: Lead['status']) => {
+  const handleStatusChange = async (newStatus) => {
     if (!id || newStatus === lead?.status) return;
 
     setIsUpdatingStatus(true);
@@ -83,7 +81,7 @@ export const LeadDetail: React.FC = () => {
         setSelectedStatus(res.lead.status);
         showToast(`Lead status updated to "${newStatus}".`);
       }
-    } catch (err: any) {
+    } catch (err) {
       showToast(err.message || 'Failed to update status', 'error');
     } finally {
       setIsUpdatingStatus(false);
@@ -100,7 +98,7 @@ export const LeadDetail: React.FC = () => {
         setLead(res.lead);
         showToast('Internal CRM notes saved.');
       }
-    } catch (err: any) {
+    } catch (err) {
       showToast(err.message || 'Failed to save notes', 'error');
     } finally {
       setIsSavingNotes(false);
@@ -113,21 +111,21 @@ export const LeadDetail: React.FC = () => {
     setIsDeleting(true);
     try {
       await apiDeleteLead(id);
-      navigate('/leads', { replace: true });
-    } catch (err: any) {
+      navigate('/admin/leads', { replace: true });
+    } catch (err) {
       showToast(err.message || 'Failed to delete lead', 'error');
       setIsDeleting(false);
       setShowDeleteModal(false);
     }
   };
 
-  const cleanPhoneForWhatsApp = (rawPhone: string) => {
-    const digits = rawPhone.replace(/\D/g, '');
+  const cleanPhoneForWhatsApp = (rawPhone) => {
+    const digits = (rawPhone || '').replace(/\D/g, '');
     if (digits.length === 10) return `91${digits}`;
     return digits;
   };
 
-  const getStatusBadge = (status: Lead['status']) => {
+  const getStatusBadge = (status) => {
     switch (status) {
       case 'new':
         return 'bg-blue-50 text-blue-700 border-blue-200';
@@ -164,7 +162,7 @@ export const LeadDetail: React.FC = () => {
           The lead record you requested may have been deleted or the ID is invalid.
         </p>
         <Link
-          to="/leads"
+          to="/admin/leads"
           className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#1F5D42] text-white text-xs font-semibold hover:bg-[#164430] transition-colors"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
@@ -174,7 +172,7 @@ export const LeadDetail: React.FC = () => {
     );
   }
 
-  const cleanedPhone = lead.phone.replace(/\s+/g, '');
+  const cleanedPhone = (lead.phone || '').replace(/\s+/g, '');
   const waNumber = cleanPhoneForWhatsApp(lead.phone);
 
   return (
@@ -197,7 +195,7 @@ export const LeadDetail: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <button
-            onClick={() => navigate('/leads')}
+            onClick={() => navigate('/admin/leads')}
             className="p-2 rounded-xl bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors cursor-pointer"
             aria-label="Back to leads"
           >
@@ -395,7 +393,7 @@ export const LeadDetail: React.FC = () => {
             </h2>
 
             <div className="space-y-2">
-              {(['new', 'contacted', 'follow-up', 'resolved', 'closed'] as Lead['status'][]).map((st) => (
+              {['new', 'contacted', 'follow-up', 'resolved', 'closed'].map((st) => (
                 <button
                   key={st}
                   onClick={() => handleStatusChange(st)}
@@ -456,7 +454,7 @@ export const LeadDetail: React.FC = () => {
                 {relatedLeads.map((rel) => (
                   <Link
                     key={rel._id || rel.id}
-                    to={`/leads/${rel._id || rel.id}`}
+                    to={`/admin/leads/${rel._id || rel.id}`}
                     className="block p-2.5 rounded-xl bg-gray-50 hover:bg-[#F1F6F1] transition-colors text-xs"
                   >
                     <div className="flex items-center justify-between font-semibold">

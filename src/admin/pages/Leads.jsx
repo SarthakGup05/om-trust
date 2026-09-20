@@ -11,19 +11,19 @@ import {
   Eye,
   RefreshCw,
 } from 'lucide-react';
-import { apiGetLeads, Lead } from '../services/api';
+import { apiGetLeads } from '../services/api';
 
-export const Leads: React.FC = () => {
+export const Leads = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [leads, setLeads] = useState<Lead[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string>('');
+  const [leads, setLeads] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  const [searchInput, setSearchInput] = useState<string>(searchParams.get('search') || '');
-  const [activeType, setActiveType] = useState<string>(searchParams.get('type') || 'all');
-  const [activeStatus, setActiveStatus] = useState<string>(searchParams.get('status') || 'all');
-  const [page, setPage] = useState<number>(parseInt(searchParams.get('page') || '1', 10));
+  const [searchInput, setSearchInput] = useState(searchParams.get('search') || '');
+  const [activeType, setActiveType] = useState(searchParams.get('type') || 'all');
+  const [activeStatus, setActiveStatus] = useState(searchParams.get('status') || 'all');
+  const [page, setPage] = useState(parseInt(searchParams.get('page') || '1', 10));
 
   const [pagination, setPagination] = useState({
     page: 1,
@@ -49,7 +49,7 @@ export const Leads: React.FC = () => {
         setLeads(res.data);
         setPagination(res.pagination);
       }
-    } catch (err: any) {
+    } catch (err) {
       setError(err.message || 'Failed to fetch leads.');
     } finally {
       setIsLoading(false);
@@ -61,7 +61,7 @@ export const Leads: React.FC = () => {
   }, [fetchLeads]);
 
   // Sync state to URL search params
-  const updateUrlParams = (newParams: Record<string, string>) => {
+  const updateUrlParams = (newParams) => {
     const next = new URLSearchParams(searchParams);
     Object.entries(newParams).forEach(([k, v]) => {
       if (!v || v === 'all' || (k === 'page' && v === '1')) {
@@ -73,32 +73,32 @@ export const Leads: React.FC = () => {
     setSearchParams(next);
   };
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
+  const handleSearchSubmit = (e) => {
     e.preventDefault();
     setPage(1);
     updateUrlParams({ search: searchInput, page: '1' });
   };
 
-  const handleTypeChange = (type: string) => {
+  const handleTypeChange = (type) => {
     setActiveType(type);
     setPage(1);
     updateUrlParams({ type, page: '1' });
   };
 
-  const handleStatusChange = (status: string) => {
+  const handleStatusChange = (status) => {
     setActiveStatus(status);
     setPage(1);
     updateUrlParams({ status, page: '1' });
   };
 
-  const handlePageChange = (newPage: number) => {
+  const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= pagination.totalPages) {
       setPage(newPage);
       updateUrlParams({ page: newPage.toString() });
     }
   };
 
-  const getStatusBadge = (status: Lead['status']) => {
+  const getStatusBadge = (status) => {
     switch (status) {
       case 'new':
         return 'bg-blue-50 text-blue-700 border-blue-200';
@@ -115,7 +115,7 @@ export const Leads: React.FC = () => {
     }
   };
 
-  const getTypeBadge = (type: Lead['type']) => {
+  const getTypeBadge = (type) => {
     switch (type) {
       case 'volunteer':
         return 'bg-[#1F5D42]/10 text-[#1F5D42]';
@@ -128,8 +128,8 @@ export const Leads: React.FC = () => {
     }
   };
 
-  const cleanPhoneForWhatsApp = (rawPhone: string) => {
-    const digits = rawPhone.replace(/\D/g, '');
+  const cleanPhoneForWhatsApp = (rawPhone) => {
+    const digits = (rawPhone || '').replace(/\D/g, '');
     if (digits.length === 10) return `91${digits}`;
     return digits;
   };
@@ -287,7 +287,7 @@ export const Leads: React.FC = () => {
                   <tr key={lead._id || lead.id} className="hover:bg-gray-50/75 transition-colors">
                     <td className="py-3.5 px-4 font-semibold text-[#24332B]">
                       <Link
-                        to={`/leads/${lead._id || lead.id}`}
+                        to={`/admin/leads/${lead._id || lead.id}`}
                         className="hover:text-[#1F5D42] hover:underline"
                       >
                         {lead.name}
@@ -331,14 +331,14 @@ export const Leads: React.FC = () => {
                           <MessageSquare className="w-4 h-4" />
                         </a>
                         <a
-                          href={`tel:${lead.phone.replace(/\s+/g, '')}`}
+                          href={`tel:${(lead.phone || '').replace(/\s+/g, '')}`}
                           title="Call Phone"
                           className="p-1.5 rounded-lg text-[#1F5D42] hover:bg-[#F1F6F1] transition-colors"
                         >
                           <Phone className="w-4 h-4" />
                         </a>
                         <Link
-                          to={`/leads/${lead._id || lead.id}`}
+                          to={`/admin/leads/${lead._id || lead.id}`}
                           title="View Details"
                           className="p-1.5 rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors"
                         >

@@ -2,11 +2,7 @@ import React from 'react';
 import { Menu, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
-interface HeaderProps {
-  onOpenSidebar: () => void;
-}
-
-export const Header: React.FC<HeaderProps> = ({ onOpenSidebar }) => {
+export const Header = ({ onOpenSidebar }) => {
   const { admin } = useAuth();
 
   return (
@@ -22,7 +18,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSidebar }) => {
 
         <div className="flex items-center gap-2">
           <span className="hidden sm:inline-block text-xs font-semibold text-gray-500 uppercase tracking-wider">
-            Lead Management System
+            Om Charitable Trust Lead CRM
           </span>
         </div>
       </div>
@@ -30,7 +26,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSidebar }) => {
       <div className="flex items-center gap-3">
         <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F1F6F1] border border-[#1F5D42]/15 text-[#1F5D42] text-xs font-semibold">
           <ShieldCheck className="w-3.5 h-3.5 text-[#D98B3A]" />
-          <span>Authenticated Admin Desk</span>
+          <span>Admin Portal</span>
         </div>
 
         <div className="w-8 h-8 rounded-full bg-[#1F5D42] text-white flex items-center justify-center text-xs font-bold font-heading shadow-xs">

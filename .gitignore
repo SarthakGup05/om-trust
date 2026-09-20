@@ -92,3 +92,6 @@ check-db.js
 test-runner.js
 Om Charitable Trust — Product Requirements Document.md
 om.pdf
+
+# Standalone admin deprecated directory
+/admin/

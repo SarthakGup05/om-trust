@@ -1,25 +1,20 @@
 import React from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Users, LogOut, HeartHandshake, X } from 'lucide-react';
+import { NavLink, useNavigate, Link } from 'react-router-dom';
+import { LayoutDashboard, Users, LogOut, HeartHandshake, X, ExternalLink } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
-interface SidebarProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
+export const Sidebar = ({ isOpen, onClose }) => {
   const { logout, admin } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
     await logout();
-    navigate('/login');
+    navigate('/admin/login');
   };
 
   const navItems = [
-    { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-    { name: 'Leads', path: '/leads', icon: Users },
+    { name: 'Dashboard', path: '/admin', end: true, icon: LayoutDashboard },
+    { name: 'Leads', path: '/admin/leads', end: false, icon: Users },
   ];
 
   return (
@@ -41,7 +36,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         {/* Brand Header */}
         <div>
           <div className="p-5 border-b border-white/10 flex items-center justify-between">
-            <div className="flex items-center gap-3">
+            <Link to="/admin" className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-[#D98B3A] shadow-inner">
                 <HeartHandshake className="w-6 h-6" />
               </div>
@@ -53,7 +48,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                   Lead CRM
                 </span>
               </div>
-            </div>
+            </Link>
 
             <button
               onClick={onClose}
@@ -72,6 +67,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 <NavLink
                   key={item.path}
                   to={item.path}
+                  end={item.end}
                   onClick={onClose}
                   className={({ isActive }) =>
                     `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
@@ -86,6 +82,19 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 </NavLink>
               );
             })}
+
+            {/* Link back to public website */}
+            <div className="pt-4 border-t border-white/10 mt-4">
+              <a
+                href="/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-between px-3.5 py-2 rounded-xl text-xs font-semibold text-white/70 hover:text-white hover:bg-white/10 transition-colors"
+              >
+                <span>View Public Website</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+            </div>
           </nav>
         </div>
 
