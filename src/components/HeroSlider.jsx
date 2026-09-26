@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from 'react'
 import { ChevronLeft, ChevronRight, ArrowRight, HeartHandshake, Utensils, Heart } from 'lucide-react'
 
 // Default slides configured with PRD Section 5 copy
-// The user can supply their actual photographs via the `image` field
 const SLIDES = [
   {
     id: 1,

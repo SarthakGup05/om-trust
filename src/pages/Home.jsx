@@ -1,4 +1,5 @@
 import HeroSlider from '../components/HeroSlider'
+import AnnouncementSection from '../components/AnnouncementSection'
 import AboutSection from '../components/AboutSection'
 import JourneySection from '../components/JourneySection'
 import AreasOfWorkSection from '../components/AreasOfWorkSection'
@@ -13,7 +14,10 @@ export default function Home() {
       {/* 1. Home / Hero Slider */}
       <HeroSlider />
 
-      {/* 2. About Om Charitable Trust */}
+      {/* 2. Curated Event Announcement (Om Darshan Dandiya Utsav) */}
+      <AnnouncementSection />
+
+      {/* 3. About Om Charitable Trust */}
       <AboutSection />
 
       {/* 3. Our Journey */}

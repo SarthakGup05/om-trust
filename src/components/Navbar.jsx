@@ -25,6 +25,7 @@ export default function Navbar() {
 
   const navLinks = [
     { name: 'Home', href: '#home' },
+    { name: 'Dandiya Utsav', href: '#announcement', badge: 'NEW' },
     { name: 'About', href: '#about' },
     { name: 'Services', href: '#services' },
     { name: 'Get Involved', href: '#get-involved' },
@@ -71,9 +72,14 @@ export default function Navbar() {
                 <li key={link.name}>
                   <a
                     href={link.href}
-                    className="font-body text-sm font-medium text-[#24332B] hover:text-[#1F5D42] transition-colors relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#1F5D42] hover:after:w-full after:transition-all after:duration-300"
+                    className="font-body text-sm font-medium text-[#24332B] hover:text-[#1F5D42] transition-colors relative py-1 inline-flex items-center gap-1.5 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#1F5D42] hover:after:w-full after:transition-all after:duration-300"
                   >
-                    {link.name}
+                    <span>{link.name}</span>
+                    {link.badge && (
+                      <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-gradient-to-r from-[#E51A4C] to-[#DC2626] text-white shadow-sm -translate-y-1 animate-pulse">
+                        {link.badge}
+                      </span>
+                    )}
                   </a>
                 </li>
               ))}
@@ -143,9 +149,14 @@ export default function Navbar() {
                 key={link.name}
                 href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className="block px-3.5 py-2.5 rounded-xl text-base font-medium text-[#24332B] hover:text-[#1F5D42] hover:bg-[#F1F6F1] active:bg-[#1F5D42]/10 transition-colors"
+                className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-base font-medium text-[#24332B] hover:text-[#1F5D42] hover:bg-[#F1F6F1] active:bg-[#1F5D42]/10 transition-colors"
               >
-                {link.name}
+                <span>{link.name}</span>
+                {link.badge && (
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-gradient-to-r from-[#E51A4C] to-[#DC2626] text-white shadow-sm animate-pulse">
+                    {link.badge}
+                  </span>
+                )}
               </a>
             ))}
             <div className="pt-2">
